@@ -1,9 +1,7 @@
 async function getArticles() {
   const res = await fetch(
-    "http://localhost:3000/api/articles",
-    {
-      cache: "no-store",
-    }
+    `${process.env.NEXT_PUBLIC_SITE_URL}/api/articles`,
+    { cache: "no-store" }
   );
 
   return res.json();
@@ -12,20 +10,16 @@ async function getArticles() {
 export default async function sitemap() {
   const articles = await getArticles();
 
-  const articleUrls = articles.map(
-    (article) => ({
-      url: `http://localhost:3000/article/${article.slug}`,
-      lastModified:
-        article.updatedAt,
-    })
-  );
+  const articleUrls = articles.map((article) => ({
+    url: `${process.env.NEXT_PUBLIC_SITE_URL}/article/${article.slug}`,
+    lastModified: article.updatedAt || new Date(),
+  }));
 
   return [
     {
-      url: "http://localhost:3000",
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}`,
       lastModified: new Date(),
     },
-
     ...articleUrls,
   ];
 }
