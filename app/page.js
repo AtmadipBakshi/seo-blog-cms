@@ -10,13 +10,15 @@ export default function Home() {
   useEffect(() => {
     async function fetchArticles() {
       try {
-        const res = await fetch("/api/articles", {
-          cache: "no-store",
-        });
+        const res = await fetch(
+          "https://seo-blog-cms.vercel.app/api/articles",
+          {
+            cache: "no-store",
+          }
+        );
 
         const data = await res.json();
 
-        // safety check
         if (Array.isArray(data)) {
           setArticles(data);
         } else {
@@ -91,7 +93,7 @@ export default function Home() {
               </p>
 
               <a
-                href={`/article/${featuredArticle.slug}`}
+                href={`https://seo-blog-cms.vercel.app/article/${featuredArticle.slug}`}
                 className="bg-black text-white px-6 py-3 rounded-xl w-fit hover:bg-gray-800 transition"
               >
                 Read Featured Article
@@ -151,7 +153,7 @@ export default function Home() {
                   </p>
 
                   <a
-                    href={`/article/${article.slug}`}
+                    href={`https://seo-blog-cms.vercel.app/article/${article.slug}`}
                     className="inline-block bg-black text-white px-5 py-3 rounded-xl hover:bg-gray-800 transition"
                   >
                     Read Article
