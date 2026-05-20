@@ -9,6 +9,7 @@ export default function AdminPage() {
   const [image, setImage] = useState("");
   const [articles, setArticles] = useState([]);
   const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const API_URL = "https://seo-blog-cms.vercel.app/api/articles";
 
@@ -16,10 +17,13 @@ export default function AdminPage() {
     try {
       const res = await fetch(API_URL);
       const data = await res.json();
+
       setArticles(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Failed to fetch articles:", err);
       setArticles([]);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -31,50 +35,37 @@ export default function AdminPage() {
     e.preventDefault();
 
     try {
-      if (editingId) {
-        const res = await fetch(API_URL, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: editingId,
-            title,
-            content,
-            image,
-            metaTitle: title,
-            metaDescription: content
-              .replace(/<[^>]*>/g, "")
-              .slice(0, 150),
-          }),
-        });
+      const payload = {
+        title,
+        content,
+        image,
+        metaTitle: title,
+        metaDescription: content
+          ?.replace(/<[^>]*>/g, "")
+          .slice(0, 150),
+      };
 
-        if (res.ok) alert("Article Updated!");
-      } else {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            title,
-            content,
-            image,
-            metaTitle: title,
-            metaDescription: content
-              .replace(/<[^>]*>/g, "")
-              .slice(0, 150),
-            published: true,
-          }),
-        });
+      const res = await fetch(API_URL, {
+        method: editingId ? "PUT" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(
+          editingId
+            ? { ...payload, id: editingId }
+            : { ...payload, published: true }
+        ),
+      });
 
-        if (res.ok) alert("Article Created!");
+      if (res.ok) {
+        alert(editingId ? "Article Updated!" : "Article Created!");
       }
 
       setTitle("");
       setContent("");
       setImage("");
       setEditingId(null);
+
       fetchArticles();
     } catch (err) {
       console.error("Submit error:", err);
@@ -151,17 +142,26 @@ export default function AdminPage() {
 
         {/* LIST */}
         <div className="space-y-4">
+
+          {loading && (
+            <p className="text-gray-500">Loading articles...</p>
+          )}
+
+          {!loading && articles.length === 0 && (
+            <p className="text-gray-500">No articles found</p>
+          )}
+
           {articles.map((article) => (
             <div
-              key={article._id}
+              key={article?._id}
               className="bg-white p-6 rounded-lg shadow flex justify-between items-center"
             >
               <div>
                 <h2 className="text-2xl font-bold">
-                  {article.title}
+                  {article?.title}
                 </h2>
                 <p className="text-gray-600">
-                  {article.slug}
+                  {article?.slug}
                 </p>
               </div>
 

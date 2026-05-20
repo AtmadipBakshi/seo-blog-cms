@@ -32,11 +32,11 @@ export default function Home() {
     fetchArticles();
   }, []);
 
-  const filteredArticles = articles.filter((article) =>
+  const filteredArticles = (articles || []).filter((article) =>
     article?.title?.toLowerCase().includes(search.toLowerCase())
   );
 
-  const featuredArticle = filteredArticles[0];
+  const featuredArticle = filteredArticles?.[0];
 
   return (
     <main className="min-h-screen bg-gray-100">
@@ -82,15 +82,15 @@ export default function Home() {
               </span>
 
               <h2 className="text-5xl font-bold mb-6 leading-tight">
-                {featuredArticle.title}
+                {featuredArticle?.title}
               </h2>
 
               <p className="text-gray-600 text-lg mb-8">
-                {featuredArticle.metaDescription?.replace(/<[^>]*>/g, "")}
+                {featuredArticle?.metaDescription?.replace(/<[^>]*>/g, "")}
               </p>
 
               <a
-                href={`https://seo-blog-cms.vercel.app/article/${featuredArticle.slug}`}
+                href={`https://seo-blog-cms.vercel.app/article/${featuredArticle?.slug}`}
                 className="bg-black text-white px-6 py-3 rounded-xl w-fit hover:bg-gray-800 transition"
               >
                 Read Featured Article
@@ -101,10 +101,10 @@ export default function Home() {
             <div>
               <img
                 src={
-                  featuredArticle.image ||
+                  featuredArticle?.image ||
                   "https://images.unsplash.com/photo-1499750310107-5fef28a66643"
                 }
-                alt={featuredArticle.title}
+                alt={featuredArticle?.title || "Article"}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -126,31 +126,31 @@ export default function Home() {
 
             {filteredArticles.map((article) => (
               <article
-                key={article._id}
+                key={article?._id}
                 className="bg-white rounded-2xl shadow-lg overflow-hidden hover:-translate-y-2 hover:shadow-2xl transition duration-300"
               >
 
                 <img
                   src={
-                    article.image ||
+                    article?.image ||
                     "https://images.unsplash.com/photo-1499750310107-5fef28a66643"
                   }
-                  alt={article.title}
+                  alt={article?.title || "Article"}
                   className="w-full h-56 object-cover"
                 />
 
                 <div className="p-6">
 
                   <h3 className="text-2xl font-bold mb-4 line-clamp-2">
-                    {article.title}
+                    {article?.title}
                   </h3>
 
                   <p className="text-gray-600 mb-6 line-clamp-3">
-                    {article.metaDescription?.replace(/<[^>]*>/g, "")}
+                    {article?.metaDescription?.replace(/<[^>]*>/g, "")}
                   </p>
 
                   <a
-                    href={`https://seo-blog-cms.vercel.app/article/${article.slug}`}
+                    href={`https://seo-blog-cms.vercel.app/article/${article?.slug}`}
                     className="inline-block bg-black text-white px-5 py-3 rounded-xl hover:bg-gray-800 transition"
                   >
                     Read Article
