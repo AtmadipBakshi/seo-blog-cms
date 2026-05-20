@@ -9,6 +9,8 @@ export default function Home() {
 
   useEffect(() => {
     async function fetchArticles() {
+      let data = [];
+
       try {
         const res = await fetch(
           "https://seo-blog-cms.vercel.app/api/articles",
@@ -17,19 +19,14 @@ export default function Home() {
           }
         );
 
-        const data = await res.json();
-
-        if (Array.isArray(data)) {
-          setArticles(data);
-        } else {
-          setArticles([]);
-        }
+        data = await res.json();
       } catch (err) {
-        console.error("Failed to load articles:", err);
-        setArticles([]);
-      } finally {
-        setLoading(false);
+        console.error("API failed:", err);
+        data = [];
       }
+
+      setArticles(Array.isArray(data) ? data : []);
+      setLoading(false);
     }
 
     fetchArticles();
